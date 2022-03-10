@@ -2,6 +2,8 @@ package com.news.scrapper.scrapper;
 
 import java.io.IOException;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.news.scrapper.websites.Website;
 
 import org.jsoup.Jsoup;
@@ -19,6 +21,16 @@ public abstract class Scrapper {
     }
 
     public abstract void execute();
+
+    protected JsonElement getAPIContent() {
+        try {
+            String data = Jsoup.connect(website.getUrl()).ignoreContentType(true).execute().body();
+            return JsonParser.parseString(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     protected Document getWebsiteContent() {
         try {
