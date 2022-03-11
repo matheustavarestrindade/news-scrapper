@@ -1,2 +1,3 @@
-com\news\scrapper\NewsScrapper.class
+com\news\scrapper\telegram\TelegramBotHandler$1.class
 com\news\scrapper\scrapper\Scrapper.class
+com\news\scrapper\NewsScrapper.class

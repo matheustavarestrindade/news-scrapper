@@ -27,22 +27,42 @@ public class Database {
         String newsTables = "CREATE TABLE IF NOT EXISTS news (headline VARCHAR(255) NOT NULL, url VARCHAR(255) NOT NULL, content TEXT NOT NULL DEFAULT '', timestamp DATETIME NOT NULL, publisher VARCHAR(60) NOT NULL, UNIQUE KEY headline (headline) USING HASH, PRIMARY KEY (headline)) ENGINE=InnoDB;";
         String papersTables = "CREATE TABLE IF NOT EXISTS papers (paper VARCHAR(255) NOT NULL, price DOUBLE NOT NULL, timestamp DATETIME NOT NULL, KEY timestamp (timestamp), KEY paper (paper)) ENGINE=InnoDB;";
         String telegramPaperTables = "CREATE TABLE IF NOT EXISTS telegram_paper_notifications (id INT NOT NULL AUTO_INCREMENT, chat_id LONG NOT NULL,paper VARCHAR(255) NOT NULL,cond VARCHAR(255) NOT NULL, value DOUBLE NOT NULL, sent BOOLEAN, PRIMARY KEY (id)) ENGINE=InnoDB;";
+        String telegramNewsChat = "CREATE TABLE IF NOT EXISTS telegram_news_notification (chat_id LONG NOT NULL, active BOOLEAN NOT NULL, PRIMARY KEY (chat_id)) ENGINE=InnoDB;";
+
         PreparedStatement ps1 = null;
         PreparedStatement ps2 = null;
         PreparedStatement ps3 = null;
+        PreparedStatement ps4 = null;
         try (Connection conn = DriverManager.getConnection(connectionUrl, this.user, this.pass)) {
             ps1 = conn.prepareStatement(newsTables);
             ps2 = conn.prepareStatement(papersTables);
             ps3 = conn.prepareStatement(telegramPaperTables);
+            ps4 = conn.prepareStatement(telegramNewsChat);
             ps1.execute();
             ps2.execute();
             ps3.execute();
+            ps4.execute();
             ps1.close();
             ps2.close();
             ps3.close();
+            ps4.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Object query(String statement, DatabaseExecute execute, DatabaseQuery query) {
+        PreparedStatement ps;
+        Object ret = null;
+        try (Connection conn = DriverManager.getConnection(connectionUrl, this.user, this.pass)) {
+            ps = conn.prepareStatement(statement);
+            execute.handle(ps);
+            ret = query.handle(ps.executeQuery());
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 
     public void execute(String statement, DatabaseExecute query) {

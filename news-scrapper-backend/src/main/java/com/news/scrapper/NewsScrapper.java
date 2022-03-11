@@ -13,13 +13,15 @@ public final class NewsScrapper {
 
     @Getter
     private static Database database;
+    @Getter
+    private static TelegramBotHandler telegramBotHandler;
 
     public static void main(String[] args) {
         System.out.println("[INFO] Starting WebScrapper Services");
         database = new Database("localhost", "3306", "root", "", "news_scrapper");
         database.init();
 
-        TelegramBotHandler botHandler = new TelegramBotHandler("");
+        telegramBotHandler = new TelegramBotHandler("");
 
         UOLEconomiaScrapper uolEconomiaScrapper = new UOLEconomiaScrapper();
         // uolEconomiaScrapper.execute();
@@ -29,5 +31,6 @@ public final class NewsScrapper {
         // r7EconomiaScrapper.execute();
         BizNewsScrapper bizNewsScrapper = new BizNewsScrapper();
         // bizNewsScrapper.execute();
+
     }
 }
